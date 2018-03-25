@@ -6,13 +6,15 @@ const int EchoPin = 4;
 float cm;
 String direction;
 
-int pinBuzzer = 7;
+int pinBuzzer_left = 8;
+int pinBuzzer_right = 7;
+
 
 void setup() {
   Serial.begin(9600);    // initialize serial communication
   pinMode(TrigPin, OUTPUT); 
   pinMode(EchoPin, INPUT);
-  direction = "exit";
+  direction = "left";
   BLE.begin();
 
   /* Set a local name for the BLE device
@@ -41,20 +43,25 @@ void loop() {
     // print the central's MAC address:
     Serial.println(central.address());
   
-    pinMode(pinBuzzer, OUTPUT);
+    pinMode(pinBuzzer_left, OUTPUT);
+    pinMode(pinBuzzer_right, OUTPUT);
     
     float dist = distance();
     while (central.connected() && dist>50){
-      digitalWrite(pinBuzzer, LOW);
-      delay(100);
-      digitalWrite(pinBuzzer, HIGH);
-      delay(100);
+      tone(pinBuzzer_left, 900, 500);
+      delay(300);
+      noTone(pinBuzzer_left);
+      tone(pinBuzzer_right, 900, 500);
+      delay(300);
+      noTone(pinBuzzer_right);
       dist = distance();
     }
-    digitalWrite(pinBuzzer, LOW);
-    delay(1500);
-    digitalWrite(pinBuzzer, HIGH);
-    delay(300);
+    tone(pinBuzzer_left, 900, 1500);
+    delay(2000);
+    noTone(pinBuzzer_left);
+    tone(pinBuzzer_right, 900, 1500);
+    delay(2000);
+    noTone(pinBuzzer_right);
     while (dist < 50){
       Direction(direction);
       dist = distance();
@@ -80,33 +87,27 @@ float distance(){
 
 void Direction(String dir){
   if (dir == "left"){
-      digitalWrite(pinBuzzer, LOW);
-      delay(30);
-      digitalWrite(pinBuzzer,HIGH);
+      tone(pinBuzzer_left, 900, 500);
       delay(500);
+      noTone(pinBuzzer_left);
+      tone(pinBuzzer_right, 300, 500);
+      delay(500);
+      noTone(pinBuzzer_right);
   }
   if (dir == "right"){
-    digitalWrite(pinBuzzer, LOW);
-    delay(30);
-    digitalWrite(pinBuzzer,HIGH);
-    delay(100);
-    digitalWrite(pinBuzzer, LOW);
-    delay(30);
-    digitalWrite(pinBuzzer,HIGH);
-    delay(250);
+    tone(pinBuzzer_left, 300, 500);
+    delay(500);
+    noTone(pinBuzzer_left);
+    tone(pinBuzzer_right, 900, 500);
+    delay(500);
+    noTone(pinBuzzer_right);
   }
   if (dir == "exit"){
-    digitalWrite(pinBuzzer, LOW);
-    delay(25);
-    digitalWrite(pinBuzzer,HIGH);
-    delay(75);
-    digitalWrite(pinBuzzer, LOW);
-    delay(25);
-    digitalWrite(pinBuzzer,HIGH);
-    delay(75);
-    digitalWrite(pinBuzzer, LOW);
-    delay(25);
-    digitalWrite(pinBuzzer,HIGH);
-    delay(300);
+    tone(pinBuzzer_left, 700, 500);
+    delay(500);
+    noTone(pinBuzzer_left);
+    tone(pinBuzzer_right, 700, 500);
+    delay(500);
+    noTone(pinBuzzer_right);
   }
 }
