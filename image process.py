@@ -7,3 +7,4 @@ import cv2
 
 
 # change image size
+img = cv2.linearPolar('1.JPG', )
